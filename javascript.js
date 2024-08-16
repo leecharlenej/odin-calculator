@@ -247,7 +247,7 @@ function displayNum(event) {
         newNum = false;
         log(`--------- After num button: if`);
     } else if (!newNum){
-        if (currDisplay === 0) {
+        if (currDisplayStr == "0") {
             calculatorDisplay.textContent = newDisplay;
         } else {
             calculatorDisplay.textContent += newDisplay;
@@ -279,15 +279,16 @@ function addDecimal() {
 
         if (firstNum===undefined){
             firstNum = currDisplay;
+            newNum = false;
         }
 
         calculatorDisplay.textContent += '.';
 
     } else if (decimalFlag === true) {
-        calculatorDisplay.textContent += " unicorn!";
+        calculatorDisplay.textContent = "unicorn!";
     }
     
-    log('--------- After percentage button');
+    log('--------- After decimal button');
 }
 
 let decimalButton = document.querySelector("#decimalButton")

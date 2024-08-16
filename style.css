@@ -18,10 +18,14 @@ body {
 }
 
 .display {
-    background-color: grey;
+    background-color: lightgrey;
     text-align: right;
     padding: 10px;
     margin-bottom: 10px;
+}
+
+.calculatorDisplay {
+    font-weight: bolder;
 }
 
 button {
