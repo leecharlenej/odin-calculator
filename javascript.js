@@ -272,6 +272,10 @@ function addDecimal() {
     console.log("----- [Click] decimalButton clicked!");
 
     let currDisplayStr = calculatorDisplay.textContent;
+    if (currDisplayStr.includes(".")){
+        decimalFlag = true;
+    };
+
     let currDisplay = parseFloat(currDisplayStr);
 
     if (decimalFlag === false){
