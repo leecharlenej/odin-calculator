@@ -29,7 +29,13 @@ function operate(firstNum, secondNum, operator) {
             ans = multiply(firstNum,secondNum);
             break;
         case '/':
-            ans = divide(firstNum,secondNum);
+            if (secondNum !== 0){
+                ans = divide(firstNum,secondNum);
+            } else {
+                ans = undefined;
+                console.log("Cannot divide by 0!")
+            }
+            
             break;
     }
 
@@ -39,8 +45,13 @@ function operate(firstNum, secondNum, operator) {
 // -----------------------------------
 // Calculator starts here
 // ------------------------------------
+
+function isNum (str) {
+    return !isNaN(parseFloat(str)) && isFinite(str);
+}
+
 let historyDisplay = document.querySelector(".historyDisplay");
-let historyDisplayvalue = '';
+let historyDisplayvalue = ' ';
 historyDisplay.textContent = historyDisplayvalue;
 
 let calculatorDisplay = document.querySelector(".calculatorDisplay");
@@ -50,6 +61,7 @@ let firstNum;
 let secondNum;
 let operator;
 let newNum = true;
+let ans = undefined;
 let logMessage = true;
 
 function log (message) {
@@ -65,25 +77,25 @@ log('========= Start calculator');
 // Calculate answer
 // ------------------------------------
 function updateHistoryDisplay(event){
+    log('--------- check history');
     
-    if (logMessage) {console.log("... Updating history display...");}
-
     valClicked = event.target.textContent;
-    console.log(valClicked);
 
-    if(valClicked === '=' && !secondNum){
+    if(valClicked === '=' && secondNum === undefined){
         historyDisplayvalue = `${firstNum} =`;
         if (logMessage) {console.log("... Updating history display...: if");}
+
     } else if ((valClicked === '+'
             || valClicked === '-'
             || valClicked === 'x'
             || valClicked === '/'
-    ) && !secondNum){
+    ) && secondNum === undefined){
         historyDisplayvalue = `${firstNum} ${operator}`;
         if (logMessage) {console.log("... Updating history display...: else if - 1st");}
-    } else if (valClicked === '=' && secondNum){
-    historyDisplayvalue = `${firstNum} ${operator} ${secondNum} =`;
-    if (logMessage) {console.log("... Updating history display...: else if -2nd");}
+
+    } else if (valClicked === '=' && secondNum !== undefined ){
+        historyDisplayvalue = `${firstNum} ${operator} ${secondNum} =`;
+        if (logMessage) {console.log("... Updating history display...: else if -2nd");}
     }
     
     historyDisplay.textContent = historyDisplayvalue;
@@ -94,20 +106,25 @@ function calculateAnswer(event) {
 
     let currDisplayStr = calculatorDisplay.textContent;
     let currDisplay = parseFloat(currDisplayStr);
-    let ans;
 
-    if(!firstNum){
+    if(firstNum === undefined){
         firstNum = currDisplay;
         ans = firstNum;
         log('--------- After = button: if');
-    } else if (firstNum && operator && !secondNum){
+    } else if (firstNum !== undefined && operator && !secondNum){
         secondNum = currDisplay;
         ans = operate(firstNum, secondNum, operator);
+        console.log(ans);
         log('--------- After = button: else if - 1st');
-    } else if (firstNum && operator && secondNum){
+    } else if (firstNum !== undefined&& operator && secondNum){
         ans = operate(firstNum, secondNum, operator);
         log('--------- After = button: else if - 2nd');
     }
+
+    if (ans === undefined || ans === NaN){
+        ans = "unicorn!";
+        newNum = true;
+    };
         
     calculatorDisplay.textContent = ans;
     updateHistoryDisplay(event);
@@ -133,6 +150,7 @@ function clearDisplay() {
     secondNum = undefined;
     operator = undefined;
     newNum = true;
+    ans = undefined;
     historyDisplay.textContent = '';
 
     log('--------- After clear button');
@@ -195,7 +213,12 @@ function displayNum(event) {
         newNum = false;
         log(`--------- After num button: if`);
     } else if (!newNum){
-        calculatorDisplay.textContent += newDisplay;
+        if (currDisplay === 0) {
+            calculatorDisplay.textContent = newDisplay;
+        } else {
+            calculatorDisplay.textContent += newDisplay;
+        }
+        
         log('--------- After num button: else if - end');
     }
     
@@ -205,3 +228,33 @@ let numButtonsList = document.querySelectorAll("#numButton")
 for (let i=0; i<numButtonsList.length; i++){
     numButtonsList[i].addEventListener("click", displayNum);
 }
+
+// -----------------------------------
+// Percentage
+// ------------------------------------
+
+let percentageFlag = 0;
+
+function showPercentage() {
+    console.log("----- [Click] percentageButton clicked!");
+
+    let currDisplayStr = calculatorDisplay.textContent.replace("%", "");
+    if (isNum(currDisplayStr)) {
+        let currDisplay = parseFloat(currDisplayStr);
+
+        if (!percentageFlag) {
+            calculatorDisplay.textContent = `${currDisplay/100}%`;
+            percentageFlag = 1;
+            newNum = true;
+        } else {
+            calculatorDisplay.textContent = `${currDisplay*100}`;
+            percentageFlag = 0;
+        }
+        
+    }
+
+    log('--------- After percentage button');
+}
+
+let percentageButton = document.querySelector("#percentageButton")
+percentageButton.addEventListener("click", showPercentage);

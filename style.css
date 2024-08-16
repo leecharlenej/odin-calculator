@@ -1,0 +1,46 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.container-top {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.calculator {
+    border: 1px solid black;
+    padding: 10px;
+
+}
+
+.display {
+    background-color: grey;
+    text-align: right;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    border: 1px solid black;
+    width: 50px;
+    padding: 10px;
+    margin: 5px;
+    box-shadow: 0 3px  grey;
+}
+
+button:hover {
+    background-color: #3e8e41
+}
+
+button:active {
+    box-shadow: none;
+    transform: translateY(5px);
+}
+
+.row {
+    display: flex;
+}

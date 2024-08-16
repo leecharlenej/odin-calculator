@@ -4,39 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Char's calculator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container-top">
+        <h1>Welcome to<br>Char's calculator!</h1>
+    </div>
     <div class="container">
 
         <div class="calculator">
 
-            <div class="historyDisplay"></div>
-            <div class="calculatorDisplay"></div>
+            <div class="display">
+                <div class="historyDisplay"></div>
+                <div class="calculatorDisplay"></div>
+
+            </div>
 
             <div class="numpad">
-                <div class="row1">
+                <div class="row">
+                    <button id="clearButton">AC</button>
+                    <button>+/-</button>
+                    <button id="percentageButton">%</button>
+                    <button id="delButton">DEL</button>
+
+                </div>
+                <div class="row">
                     <button id="numButton">7</button>
                     <button id="numButton">8</button>
                     <button id="numButton">9</button>
+                    <button id="operatorButton">x</button>
                 </div>
-                <div class="row2">
+                <div class="row">
                     <button id="numButton">4</button>
                     <button id="numButton">5</button>
                     <button id="numButton">6</button>
-                    <button id="operatorButton">x</button>
                     <button id="operatorButton">/</button>
                 </div>
-                <div class="row3">
+                <div class="row">
                     <button id="numButton">1</button>
                     <button id="numButton">2</button>
                     <button id="numButton">3</button>
                     <button id="operatorButton">+</button>
-                    <button id="operatorButton">-</button>
+                    
                 </div>
-                <div class="row4">
-                    <button>0</button>
-                    <button id="clearButton">Clear</button>
+                <div class="row">
+                    <button id="numButton">0</button>
+                    <button id ='decimalButton'>.</button>
                     <button id ="equalButton">=</button>
+                    <button id="operatorButton">-</button>
                 </div>
                 
             </div>
