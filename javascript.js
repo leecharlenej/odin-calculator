@@ -25,7 +25,7 @@ function operate(firstNum, secondNum, operator) {
         case '-':
             ans = subtract(firstNum,secondNum);
             break;
-        case '*':
+        case 'x':
             ans = multiply(firstNum,secondNum);
             break;
         case '/':
@@ -39,75 +39,138 @@ function operate(firstNum, secondNum, operator) {
 // -----------------------------------
 // Calculator starts here
 // ------------------------------------
-let calculatorDisplay = document.querySelector(".calculatorDisplay");
-calculatorDisplay.textContent = 11;
+let historyDisplay = document.querySelector(".historyDisplay");
+let historyDisplayvalue = '';
+historyDisplay.textContent = historyDisplayvalue;
 
-let firstNum = parseFloat(calculatorDisplay.textContent);
+let calculatorDisplay = document.querySelector(".calculatorDisplay");
+calculatorDisplay.textContent = 0;
+
+let firstNum;
 let secondNum;
 let operator;
-let firstOperatorClicked = true;
-let brandNew = true;
+let newNum = true;
+let logMessage = true;
 
-console.log(`brandNew: ${brandNew}, firstOperatorClicked: ${firstOperatorClicked}`);
-console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
+function log (message) {
+    if (logMessage === true) {
+        console.log(message);
+        console.log(`newNum: ${newNum}`);
+        console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
+    };
+}
 
+log('========= Start calculator');
+// -----------------------------------
+// Calculate answer
+// ------------------------------------
+function updateHistoryDisplay(event){
+    
+    if (logMessage) {console.log("... Updating history display...");}
 
-function calculateAnswer() {
+    valClicked = event.target.textContent;
+    console.log(valClicked);
+
+    if(valClicked === '=' && !secondNum){
+        historyDisplayvalue = `${firstNum} =`;
+        if (logMessage) {console.log("... Updating history display...: if");}
+    } else if ((valClicked === '+'
+            || valClicked === '-'
+            || valClicked === 'x'
+            || valClicked === '/'
+    ) && !secondNum){
+        historyDisplayvalue = `${firstNum} ${operator}`;
+        if (logMessage) {console.log("... Updating history display...: else if - 1st");}
+    } else if (valClicked === '=' && secondNum){
+    historyDisplayvalue = `${firstNum} ${operator} ${secondNum} =`;
+    if (logMessage) {console.log("... Updating history display...: else if -2nd");}
+    }
+    
+    historyDisplay.textContent = historyDisplayvalue;
+}
+
+function calculateAnswer(event) {
     console.log("----- [Click] equalButton clicked!");
-    console.log(`brandNew: ${brandNew}, firstOperatorClicked: ${firstOperatorClicked}`);
-    console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
 
-    let ans = firstNum;
+    let currDisplayStr = calculatorDisplay.textContent;
+    let currDisplay = parseFloat(currDisplayStr);
+    let ans;
 
-    if (secondNum && operator){
+    if(!firstNum){
+        firstNum = currDisplay;
+        ans = firstNum;
+        log('--------- After = button: if');
+    } else if (firstNum && operator && !secondNum){
+        secondNum = currDisplay;
         ans = operate(firstNum, secondNum, operator);
+        log('--------- After = button: else if - 1st');
+    } else if (firstNum && operator && secondNum){
+        ans = operate(firstNum, secondNum, operator);
+        log('--------- After = button: else if - 2nd');
     }
         
     calculatorDisplay.textContent = ans;
-    console.log("Clicked operator button.")
+    updateHistoryDisplay(event);
+    firstNum = undefined;
+    secondNum = undefined;
+    operator = undefined;
+    newNum = true;
+    
 }
 
 let equalButton = document.querySelector("#equalButton")
 equalButton.addEventListener("click", calculateAnswer);
 
+// -----------------------------------
+// clear calculator
+// ------------------------------------
+
 function clearDisplay() {
     console.log("----- [Click] clearButton clicked!");
 
     calculatorDisplay.textContent = 0;
-    firstNum = parseFloat(calculatorDisplay.textContent);
+    firstNum = undefined;
     secondNum = undefined;
     operator = undefined;
-    firstOperatorClicked = true;
-    brandNew = true;
+    newNum = true;
+    historyDisplay.textContent = '';
 
-    console.log(`brandNew: ${brandNew}, firstOperatorClicked: ${firstOperatorClicked}`);
-    console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
+    log('--------- After clear button');
 }
 
 let clearButton = document.querySelector("#clearButton")
 clearButton.addEventListener("click", clearDisplay);
 
+// -----------------------------------
+// Operator
+// ------------------------------------
 
 function clickOperator(event) {
     console.log("----- [Click] operatorButton clicked!");
-    console.log(`brandNew: ${brandNew}, firstOperatorClicked: ${firstOperatorClicked}`);
-    console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
+
+    let currDisplayStr = calculatorDisplay.textContent;
+    let currDisplay = parseFloat(currDisplayStr);
     
-    if(firstOperatorClicked){
-        firstNum = parseFloat(calculatorDisplay.textContent);
-        secondNum = firstNum;
+    if(!operator){
+        firstNum = currDisplay;
         operator = event.target.textContent;
-        firstOperatorClicked = false;
-        console.log(`firstOperatorClick: ${firstOperatorClicked}`);
-        console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
+        newNum = true;
+        log(`--------- After operator button: if`);
+
     } else {
+        if (!secondNum){
+            secondNum = currDisplay;
+        }
         firstNum = operate(firstNum,secondNum,operator)
+        secondNum = undefined;
+        newNum = true;
         calculatorDisplay.textContent = firstNum;
         operator = event.target.textContent;
         firstOperatorClicked = true;
-        console.log(`firstOperatorClick: ${firstOperatorClicked}`);
-        console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
+        log(`--------- After operator button: else`);
     };
+
+    updateHistoryDisplay(event);
 }
 
 let operatorButtonsList = document.querySelectorAll("#operatorButton")
@@ -115,22 +178,27 @@ for (let i=0; i<operatorButtonsList.length; i++){
     operatorButtonsList[i].addEventListener("click", clickOperator);
 }
 
+// -----------------------------------
+// Display numbers
+// ------------------------------------
 
 function displayNum(event) {
     console.log("----- [Click] numButton clicked!");
-    console.log(`brandNew: ${brandNew}, firstOperatorClicked: ${firstOperatorClicked}`);
-    console.log(`firstnum: ${firstNum}, secondNum = ${secondNum}, operator = ${operator}`);
 
-    let currDisplay = calculatorDisplay.textContent;
-    let newDisplay = event.target.textContent;
-    console.log(currDisplay)
+    let currDisplayStr = calculatorDisplay.textContent;
+    let currDisplay = parseFloat(currDisplayStr);
+    let newDisplayStr = event.target.textContent;
+    let newDisplay = parseFloat(newDisplayStr);
 
-    if (brandNew && currDisplay === '0'){
+    if (newNum){
         calculatorDisplay.textContent = newDisplay;
-        brandNew = false;
-    } else {
+        newNum = false;
+        log(`--------- After num button: if`);
+    } else if (!newNum){
         calculatorDisplay.textContent += newDisplay;
+        log('--------- After num button: else if - end');
     }
+    
 }
 
 let numButtonsList = document.querySelectorAll("#numButton")
