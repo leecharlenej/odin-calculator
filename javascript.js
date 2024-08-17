@@ -282,7 +282,7 @@ function addDecimal() {
         decimalFlag = true;
 
         if (firstNum===undefined){
-            firstNum = currDisplay;
+            //firstNum = currDisplay;
             newNum = false;
         }
 
